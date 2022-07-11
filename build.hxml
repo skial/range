@@ -1,0 +1,46 @@
+--class-path src
+--class-path test
+
+--library unifill
+--library tink_unittest
+
+--main Main
+
+--dce full
+
+--each
+
+--library hxnodejs
+--js bin/range.js
+
+--next
+
+--neko bin/range.n
+
+--next
+
+--hl bin/range.hl
+
+--next
+
+--java bin/java
+
+--next
+
+--jvm bin/range.jar
+
+--next
+
+--cs bin/cs
+
+--next
+
+--python bin/range.py
+
+--next
+
+--php bin/php
+
+--next
+
+--interp
