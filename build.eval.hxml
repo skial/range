@@ -1,0 +1,11 @@
+--class-path src
+--class-path test
+
+--library unifill
+--library tink_unittest
+
+--main Main
+
+--dce full
+
+--interp

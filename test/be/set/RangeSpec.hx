@@ -1,8 +1,9 @@
 package be.set;
 
 import be.set.Range;
+import be.set.RangeTestMethods.*;
 
-@:asserts class RangeSpec {
+@:asserts class RangeSpec implements tink.unit.Benchmark {
 
     public function new() {}
 
@@ -19,9 +20,10 @@ import be.set.Range;
     @:variant(10, 20, 15, 25, 15, 20)
     @:variant(15, 25, 10, 20, 15, 20)
     public function testIntersection(amin:Int, amax:Int, bmin:Int, bmax:Int, rmin:Int, rmax:Int) {
-        var a = new Range(amin, amax);
-        var b = new Range(bmin, bmax);
-        var i = Range.intersection(a, b);
+        var r = intersection(amin, amax, bmin, bmax);
+        var a = r.a;
+        var b = r.b;
+        var i = r.i;
         asserts.assert( a.has(rmin) == true );
         asserts.assert( b.has(rmax) == true );
         asserts.assert( i.has(rmin) == true );
@@ -34,9 +36,10 @@ import be.set.Range;
     @:variant(1, 2, 3, 4, 1, 4)
     @:variant(10, 20, 40, 50, 15, 45)
     public function testIntersectionDisjoin(amin:Int, amax:Int, bmin:Int, bmax:Int, rmin:Int, rmax:Int) {
-        var a = new Range(amin, amax);
-        var b = new Range(bmin, bmax);
-        var i = Range.intersection(a, b);
+        var r = intersection(amin, amax, bmin, bmax);
+        var a = r.a;
+        var b = r.b;
+        var i = r.i;
         asserts.assert( a.has(rmin) == true );
         asserts.assert( b.has(rmax) == true );
         asserts.assert( i.has(rmin) == false );
@@ -52,9 +55,10 @@ import be.set.Range;
     @:variant(20, 25, 10, 15, 10, 25, 2)
     @:variant(1, 2, 3, 4, 1, 4, 1)
     public function testUnion(amin:Int, amax:Int, bmin:Int, bmax:Int, min:Int, max:Int, length:Int) {
-        var a = new Range(amin, amax);
-        var b = new Range(bmin, bmax);
-        var u = Range.union(a, b);
+        var r = union(amin, amax, bmin, bmax);
+        var a = r.a;
+        var b = r.b;
+        var u = r.u;
         asserts.assert( u.min == min );
         asserts.assert( u.max == max );
         asserts.assert( u.values.length == length );
@@ -64,8 +68,9 @@ import be.set.Range;
     @:variant(10, 20, 30, 2)
     @:variant(0, 20, 30, 1)
     public function testComplement(amin:Int, amax:Int, limit:Int, length:Int) {
-        var r = new Range(amin, amax);
-        var c = Range.complement(r, 0, limit);
+        var o = complement(amin, amax, limit);
+        var r = o.r;
+        var c = o.c;
         asserts.assert( !c.has(r.min) );
         asserts.assert( !c.has(r.max) );
         asserts.assert( c.values.length == length );

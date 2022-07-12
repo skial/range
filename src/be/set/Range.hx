@@ -1,6 +1,20 @@
 package be.set;
 
-@:forward @:forwardStatics abstract Range(RangeImpl) from RangeImpl to RangeImpl {
+@:structInit class RangeImpl {
+
+	public var min:Int;
+	public var max:Int;
+	
+	public inline function new (min:Int, max:Int) {
+		this.min = min;
+		this.max = max;
+	}
+	
+}
+
+@:forward 
+@:forwardStatics 
+abstract Range(RangeImpl) from RangeImpl to RangeImpl {
 
 	public static var EMPTY = new Range(0, 0);
 
@@ -79,18 +93,6 @@ package be.set;
 		r.push(new Range(a.max+1, max));
 
 		return new Ranges(r);
-	}
-	
-}
-
-@:structInit class RangeImpl {
-
-	public var min:Int;
-	public var max:Int;
-	
-	public inline function new (min:Int, max:Int) {
-		this.min = min;
-		this.max = max;
 	}
 	
 }

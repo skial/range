@@ -9,6 +9,8 @@ class Main {
         Runner.run(TestBatch.make([
             new be.set.RangeSpec(),
             new be.set.RangesSpec(),
+            new be.set.RangePerf(),
+            new be.set.RangesPerf(),
         ])).handle( Runner.exit );
     }
 
