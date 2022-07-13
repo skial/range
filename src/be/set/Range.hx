@@ -12,7 +12,6 @@ package be.set;
 		return this.min = v;
 	}
 
-	
 	@:isVar public var max(get, set):Int;
 	
 	private inline function get_max() {
@@ -22,7 +21,6 @@ package be.set;
 	private inline function set_max(v) {
 		return this.max = v;
 	}
-
 
 	public var length(get, never):Int;
 
