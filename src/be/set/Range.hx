@@ -1,11 +1,36 @@
 package be.set;
 
-@:structInit class RangeImpl {
+@:structInit class RangeImpl implements IRange<Int> {
 
-	public var min:Int;
-	public var max:Int;
+	@:isVar public var min(get, set):Int;
+
+	private inline function get_min() {
+		return this.min;
+	}
+
+	private inline function set_min(v) {
+		return this.min = v;
+	}
+
 	
-	public inline function new (min:Int, max:Int) {
+	@:isVar public var max(get, set):Int;
+	
+	private inline function get_max() {
+		return this.max;
+	}
+
+	private inline function set_max(v) {
+		return this.max = v;
+	}
+
+
+	public var length(get, never):Int;
+
+	private inline function get_length() {
+		return this.max - this.min;
+	}
+	
+	public inline function new(min:Int, max:Int) {
 		this.min = min;
 		this.max = max;
 	}
@@ -18,8 +43,8 @@ abstract Range(RangeImpl) from RangeImpl to RangeImpl {
 
 	public static var EMPTY = new Range(0, 0);
 
-	public var length(get, never):Int;
-	private inline function get_length() return this.max - this.min;
+	/*public var length(get, never):Int;
+	private inline function get_length() return this.max - this.min;*/
 
 	public inline function new(min:Int, max:Int) {
 		this = new RangeImpl( min, max );
