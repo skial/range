@@ -3,7 +3,8 @@ package be.set;
 import be.set.Range;
 import be.set.RangeTestMethods.*;
 
-@:asserts class RangeSpec implements tink.unit.Benchmark {
+@:asserts 
+class RangeSpec implements tink.unit.Benchmark {
 
     public function new() {}
 
@@ -28,6 +29,10 @@ import be.set.RangeTestMethods.*;
         asserts.assert( b.has(rmax) == true );
         asserts.assert( i.has(rmin) == true );
         asserts.assert( i.has(rmax) == true );
+        asserts.assert( i.min >= a.min );
+        asserts.assert( i.min >= b.min );
+        asserts.assert( i.max <= a.max);
+        asserts.assert( i.max <= b.max );
         asserts.assert( i.min == rmin );
         asserts.assert( i.max == rmax );
         return asserts.done();
