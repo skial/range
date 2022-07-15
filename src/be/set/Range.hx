@@ -109,11 +109,52 @@ abstract Range(RangeImpl) from RangeImpl to RangeImpl {
 		return new Ranges(r);
 	}
 
-	// @see https://en.wikipedia.org/wiki/Complement_(set_theory)
-	public static function complement(a:Range, ?min:Int = 0, ?max:Int = 0x10FFFF):Ranges {
+	// Alias for `absoluteComplement`
+	public static inline function complement(a:Range, ?min:Int = 0, ?max:Int = 0x10FFFF):Ranges {
+		return absoluteComplement(a, min, max);
+	}
+
+	public static function absoluteComplement(a:Range, ?min:Int = 0, ?max:Int = 0x10FFFF):Ranges {
 		var r = [];
 		if (a.min-1 > min) r.push(new Range(min, a.min-1));
 		r.push(new Range(a.max+1, max));
+
+		return new Ranges(r);
+	}
+
+	// Alias for `relativeComplement`
+	public static inline function setDifference(lhs:Range, rhs:Range):Ranges {
+		return relativeComplement(lhs, rhs);
+	}
+
+	/**
+		The relative complement of `rhs` in `lhs` or `lhs` \ `rhs`.
+		---
+		1) `[ln∙∙∙(rn---lx]---rx)` == `[ln∙∙∙rn-1]`
+		2) `[ln∙∙∙(rn---rx)∙∙∙lx]` == `[ln∙∙∙rn-1, rx+1∙∙∙lx]`
+		3) `(rn---[ln∙∙∙rx)∙∙∙lx]` == `[rx+1∙∙∙lx]`
+		4) `(rn---[ln∙∙∙lx]---rx)` == `[]`
+	**/
+	public static function relativeComplement(lhs:Range, rhs:Range):Ranges {
+		var a = new Range(0, 0);
+		var b = new Range(0, 0);
+		var r = [];
+
+		// Gets output for point 1 & r[0] for point 2.
+		if (lhs.min < rhs.min) {
+			a.min = lhs.min;
+			a.max = rhs.min - 1;
+			r.push( a );
+		}
+
+		// Gets output for point 3 & r[1] for point 2.
+		if (lhs.max > rhs.max) {
+			b.min = rhs.max + 1;
+			b.max = lhs.max;
+			r.push( b );
+		}
+
+		if (r.length == 0) r.push( a ); // Satisfies point 4, which is empty (0, 0);
 
 		return new Ranges(r);
 	}

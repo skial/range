@@ -22,4 +22,10 @@ class RangePerf implements tink.unit.Benchmark {
         return tink.unit.Assert.benchmark(10000, complement(10, 20, 30));
     }
 
+    public function perfRelativeComplement() {
+        var a = new be.set.Range(1, 10);
+        var b = new be.set.Range(3, 8);
+        return tink.unit.Assert.benchmark(10000, Range.relativeComplement(a, b));
+    }
+
 }

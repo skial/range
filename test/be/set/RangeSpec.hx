@@ -40,7 +40,7 @@ class RangeSpec implements tink.unit.Benchmark {
 
     @:variant(1, 2, 3, 4, 1, 4)
     @:variant(10, 20, 40, 50, 15, 45)
-    public function testIntersectionDisjoin(amin:Int, amax:Int, bmin:Int, bmax:Int, rmin:Int, rmax:Int) {
+    public function testIntersectionDisjoint(amin:Int, amax:Int, bmin:Int, bmax:Int, rmin:Int, rmax:Int) {
         var r = intersection(amin, amax, bmin, bmax);
         var a = r.a;
         var b = r.b;
@@ -85,6 +85,20 @@ class RangeSpec implements tink.unit.Benchmark {
         }
         asserts.assert( c.max == limit );
         asserts.assert( c.values[c.values.length-1].min == (amax + 1) );
+        return asserts.done();
+    }
+
+    @:variant(new be.set.Range(1, 3), new be.set.Range(2, 4), new be.set.Ranges([new be.set.Range(1, 1)]))
+    @:variant(new be.set.Range(2, 4), new be.set.Range(1, 3), new be.set.Ranges([new be.set.Range(4, 4)]))
+    @:variant(new be.set.Range(3, 8), new be.set.Range(1, 10), new be.set.Ranges([new be.set.Range(0, 0)]))
+    @:variant(new be.set.Range(1, 10), new be.set.Range(3, 8), new be.set.Ranges([new be.set.Range(1, 3), new be.set.Range(9, 10)]))
+    public function testRelativeComplement(a:Range, b:Range, e:Ranges) {
+        var o = Range.relativeComplement(a, b);
+        asserts.assert(o.min == e.min);
+        asserts.assert(o.max == e.max);
+        asserts.assert(o.values.length == e.values.length);
+        asserts.assert(!o.has(b.min), 'Output `o` doesnt have `b.min` value (${b.min}) in its range (${o.values.map(r -> '(${r.min}, ${r.max})')}).');
+        asserts.assert(!o.has(b.max), 'Output `o` doesnt have `b.max` value (${b.max}) in its range (${o.values.map(r -> '(${r.min}, ${r.max})')}).');
         return asserts.done();
     }
 
