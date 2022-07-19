@@ -69,6 +69,10 @@ abstract Range(RangeImpl) from RangeImpl to RangeImpl {
 		return new RangeImpl( v[0], v[v.length-1] );
 	}
 
+	@:from public static inline function fromIntIterator(v:IntIterator):Range {
+		return @:privateAccess new RangeImpl( v.min, v.max );
+	}
+
 	// @see https://en.wikipedia.org/wiki/Intersection_(set_theory)
 	public static function intersection(a:Range, b:Range):Range {
 		var r = new Range(0, 0); // Default is empty/disjoint.
@@ -129,6 +133,7 @@ abstract Range(RangeImpl) from RangeImpl to RangeImpl {
 
 	/**
 		The relative complement of `rhs` in `lhs` or `lhs` \ `rhs`.
+		That is, the elements that appear in `lhs` that are not in `rhs`.
 		---
 		1) `[ln∙∙∙(rn---lx]---rx)` == `[ln∙∙∙rn-1]`
 		2) `[ln∙∙∙(rn---rx)∙∙∙lx]` == `[ln∙∙∙rn-1, rx+1∙∙∙lx]`
