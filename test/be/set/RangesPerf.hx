@@ -55,4 +55,13 @@ class RangesPerf implements tink.unit.Benchmark {
         });
     }
 
+    public function perDifference() {
+        var a = new be.set.Ranges([new be.set.Range(1, 10)]);
+        var b = new be.set.Ranges([1, 3, 5, 7, 9]);
+        return tink.unit.Assert.benchmark(10000, {
+            var d = new be.set.Ranges([2, 4, 6, 8, 10]);
+            d.max == 10;
+        });
+    }
+
 }
