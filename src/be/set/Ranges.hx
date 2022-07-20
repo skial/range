@@ -368,64 +368,14 @@ class Ranges {
 	/**
 		The relative complement of `rhs` in `lhs` or `lhs` \ `rhs`.
 		That is, the elements that appear in `lhs` that are not in `rhs`.
-		---
-		1) `[ln∙∙∙(rn---lx]---rx)` == `[ln∙∙∙rn-1]`
-		2) `[ln∙∙∙(rn---rx)∙∙∙lx]` == `[ln∙∙∙rn-1, rx+1∙∙∙lx]`
-		3) `(rn---[ln∙∙∙rx)∙∙∙lx]` == `[rx+1∙∙∙lx]`
-		4) `(rn---[ln∙∙∙lx]---rx)` == `[]`
 	**/
 	public static function relativeComplement(lhs:Ranges, rhs:Ranges):Ranges {
 		var r:Array<Range> = [];
 
-		// Handles point 4).
-		// TODO test to see if this is needed.
-		if (lhs.min >= rhs.min && lhs.max <= rhs.max) {
+		// Neither `lhs` or `rhs` overlap.
+		if (lhs.min >= rhs.max || lhs.max <= rhs.min) {
 			return EMPTY.copy();
 		}
-
-		/*var iterator:RangesIterator = cast lhs.iterator();
-		var ranges = rhs.values;
-		var idx = 0;//rhs.indexOf(lhs.min, 0);
-		var range = ranges[idx];
-
-		/*var tmp = new Range(0, 0);
-		var val = 0;
-		for (element in iterator) { // TODO turn into awhile loop, values are already tracked in the body...
-			val = element;
-			// If `lhs.values` contains non optimised ranges, split ranges can be less than whats tracked, this fixes that.
-			if (r.length != 0 && val < r[r.length-1].max) val = ranges[idx-1].max+1;
-			
-			// Prevents iterating past `rhs` max value.
-			if (val > rhs.max) {
-				r.push( new Range( val, lhs.max ) );
-				break;
-			}
-			
-			if (val < range.min) {
-				tmp.min = val;
-				tmp.max = range.min - 1;
-
-				r.push( tmp.copy() );
-				@:privateAccess iterator.current = range.max + 1;
-				idx++;
-				range = ranges[idx];	
-				
-				if (range == null) {
-					if (@:privateAccess iterator.current > rhs.max) {
-						r.push( new Range( @:privateAccess iterator.current, lhs.max ) );
-						
-					}
-					break;
-				}
-
-				continue;
-				
-			}
-
-			idx++;
-			range = ranges[idx];
-
-		}*/
 
 		/**
 			1) `(rhM---[lhM...lhX]---rhX)` == `[]`
