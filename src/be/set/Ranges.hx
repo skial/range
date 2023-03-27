@@ -1,7 +1,5 @@
 package be.set;
 
-import unifill.CodePoint;
-
 using Lambda;
 
 @:structInit 
