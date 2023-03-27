@@ -5,6 +5,9 @@ pairs of values or sets of values.
 
 ## Tested targets
 
+- Tested ✅
+- Untested ➖
+
 | Php | Python | Jvm |Java | C# | Js/Node | Interp | Neko | HashLink | Lua | CPP |
 | - | -| - | - | - |- | -| - | - | - | - |
 | ✅ | ✅     | ✅ |✅  | ✅ | ✅     | ✅ | ✅  | ✅       | ➖ | ➖ |
