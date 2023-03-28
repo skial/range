@@ -51,6 +51,10 @@ abstract Ranges {
 }
 ```
 
+### Defines
+
+- `-D debug_ranges` - Used in `Range.hx`.
+
 ### Notes
 
 - Currently only supports `Int` ranges.
