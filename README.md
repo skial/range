@@ -49,3 +49,9 @@ abstract Ranges {
     static function complement(a:Ranges, ?min:Int = 0, ?max:Int = 0x10FFFF):Ranges;
     static function setDifference(lhs:Ranges, rhs:Ranges):Ranges;
 }
+```
+
+### Notes
+
+- Currently only supports `Int` ranges.
+- Some params are left over from being originally built for sets of codepoints.
