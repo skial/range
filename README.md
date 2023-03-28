@@ -1,7 +1,7 @@
 # range
 
 Provides `intersection`, `union` and `complement` and other utility methods for
-pairs of values or sets of values.
+pairs of values or sets of values. _Currently only supports parts of `Int`'s or sets of `Int`'s._
 
 ## Tested targets
 
