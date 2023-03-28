@@ -1,10 +1,9 @@
 package be.set;
 
-import unifill.CodePoint;
-
 using Lambda;
 
-@:structInit class Ranges {
+@:structInit 
+class Ranges {
 
 	public static var EMPTY = new Ranges([Range.EMPTY]);
 
@@ -26,6 +25,22 @@ using Lambda;
 		for (range in values) if (range.has(value)) return true;
 		return false;
 	}
+
+	/** 
+		Returns the index of the range that contains `value` or `-1` if none matched.
+		@value - The value to match against.
+		@idx - Optional default value to return on failed matches.
+	*/
+	public function indexOf(value:Int, ?idx:Int = -1):Int {
+		var last = values.length-1;
+
+		if (values[0].has(value)) return 0;
+		if (values[last].has(value)) return last;
+		for (i in 1...(last-1)) if (values[i].has(value)) return i;
+		return idx;
+	}
+
+	// TODO add `push` which just adds a range to end of collection, not position optimised or merged.
 
 	public inline function copy():Ranges {
 		return new Ranges([for (r in this.values) r.copy()]);
@@ -315,8 +330,12 @@ using Lambda;
 		return u;
 	}
 
-	// @see https://en.wikipedia.org/wiki/Complement_(set_theory)
 	public static function complement(a:Ranges, ?min:Int = 0, ?max:Int = 0x10FFFF):Ranges {
+		return absoluteComplement(a, min, max);
+	}
+
+	// @see https://en.wikipedia.org/wiki/Complement_(set_theory)
+	public static function absoluteComplement(a:Ranges, ?min:Int = 0, ?max:Int = 0x10FFFF):Ranges {
 		var r = [];
 		var idx = 0;
 
@@ -335,6 +354,119 @@ using Lambda;
 
 			idx++;
 		}
+
+		return new Ranges(r);
+	}
+
+	// Alias for `relativeComplement`
+	public static inline function setDifference(lhs:Ranges, rhs:Ranges):Ranges {
+		return relativeComplement(lhs, rhs);
+	}
+
+	/**
+		The relative complement of `rhs` in `lhs` or `lhs` \ `rhs`.
+		That is, the elements that appear in `lhs` that are not in `rhs`.
+	**/
+	public static function relativeComplement(lhs:Ranges, rhs:Ranges):Ranges {
+		var r:Array<Range> = [];
+
+		// Neither `lhs` or `rhs` overlap.
+		if (lhs.min >= rhs.max || lhs.max <= rhs.min) {
+			return EMPTY.copy();
+		}
+
+		/**
+			1) `(rhM---[lhM...lhX]---rhX)` == `[]`
+			2) `(rhM---[lhM.-.rhX)...lhX]` == `[rhX+1...lhX]`
+			3) `[lhM...(rhM-.-lhX]---rhX)` == `[lhM...rhM-1]`
+			4) `[lhM...(rhM---rhX)...lhX]` == `[lhM...rhM-1, rhX+1...lhX]`
+			---
+			`[{r1M---((lhM|lhM).-.r1X}, {r2M.-.(lhX|lhX))---r2X}]` == `[r1X+1...r2M-1]`
+			```
+			[lhM....................lhX]
+			      (r1M---r1X)   {r2M---r2X}
+			```
+			`[lhM...r1M-1, r1x+1...r2M-1]`
+
+			```
+				[lhM............lhX]	
+			(r1M---r1X)		 {r2M...r2X}
+			```
+			`[r1X+1...r2M-1]`
+
+			```
+			[lhM..........................lhX]
+			    (r1M---r1X)   {r2M---r2X}
+			```
+			`[lhM...r1M-1, r1X+1...r2M-1, r2X+1...lhX]`
+			---
+		**/
+
+		var _rhs:Range;
+		var idx = 0;
+		var values = lhs.values;
+		var _lhs = values[idx];
+		var tmp = _lhs.copy();
+		for (i in 0...rhs.values.length) {
+			_rhs = rhs.values[i];
+
+			// `_rhs` range is too small.
+			if (tmp.min > _rhs.max) continue;
+
+			// 0)
+			if (tmp.min < _rhs.min) {
+				tmp.max = _rhs.min - 1;
+				// creates `[x...rhM-1]`
+				r.push( tmp.copy() );
+
+				if (_lhs.max > _rhs.max) {
+					// Setup `[r1X+1...lhX]` which will go through 0) creating `[r1X+1...r2M-1]`
+					tmp.min = _rhs.max + 1;
+					tmp.max = _lhs.max;
+					continue;
+
+				} else {
+					// Attempt to move onto next `lhs` range.
+					idx++;
+					if (values[idx] != null) {
+						_lhs = values[idx];
+						tmp.min = _rhs.max + 1;
+						tmp.max = _lhs.max;
+
+					} else {
+						// `lhs` is contained in `_rhs` and is last in collection, finish early.
+						break;
+					}
+
+				}
+
+			} else if (tmp.min >= _rhs.min && tmp.min < _rhs.max) {
+				//  `[rhX+1...x]`
+				tmp.min = _rhs.max + 1;
+
+				if (tmp.min >= tmp.max) {
+					// Attempt to move onto next `lhs` range.
+					idx++;
+					if (values[idx] != null) {
+						_lhs = values[idx];
+						tmp.max = _lhs.max;
+
+					} else {
+						// `lhs` is contained in `_rhs` and is last in collection, finish early.
+						break;
+					}
+				}
+
+			} else {
+				// `tmp.min` equals `_rhs.min`.
+				tmp.min = _rhs.max + 1;
+
+			}
+
+		}
+
+		// `tmp` values may have been set and `continue`d at the end of `rhs.values.length`.
+		r.push( tmp.copy() );
 
 		return new Ranges(r);
 	}

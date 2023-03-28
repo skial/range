@@ -39,6 +39,7 @@
 
 --next
 
+--macro addGlobalMetadata('ANSI.Attribute', "@:native('ANSIAttribute')", false)
 --php bin/php
 
 --next

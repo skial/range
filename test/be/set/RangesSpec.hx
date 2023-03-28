@@ -365,4 +365,21 @@ class RangesSpec {
         return asserts.done();
     }
 
+    @:variant(new be.set.Ranges([1...10]), new be.set.Ranges([1, 3, 5, 7, 9]), new be.set.Ranges([2, 4, 6, 8, 10]))
+    @:variant(new be.set.Ranges([1...100]), new be.set.Ranges([21, 33, 55, 67, 79]), new be.set.Ranges([1...20, 22...32, 34...54, 56...66, 68...78, 80...100]))
+    @:variant(new be.set.Ranges([1...50, 51...100]), new be.set.Ranges([21, 33, 55, 67, 79]), new be.set.Ranges([1...20, 22...32, 34...54, 56...66, 68...78, 80...100]))
+    @:variant(new be.set.Ranges([25...50]), new be.set.Ranges([5...8, 10...12, 15...17, 20...30, 35...40]), new be.set.Ranges([31...34, 41...50]))
+    @:variant(new be.set.Ranges([20...30]), new be.set.Ranges([10...15]), new be.set.Ranges([0...0]))
+    public function testRelativeComplement(a:Ranges, b:Ranges, e:Ranges) {
+        var o = Ranges.relativeComplement(a, b);
+        asserts.assert( o.min == e.min );
+        asserts.assert( o.max == e.max );
+        asserts.assert( o.values.map( r -> '${r.min}:${r.max}' ).toString() == e.values.map( r -> '${r.min}:${r.max}' ).toString() );
+        asserts.assert( o.values.length == e.values.length );
+        for (element in b.values) {
+            asserts.assert( !o.has( element.min ), 'Output `o` does not contain `${element.min}`' );
+        }
+        return asserts.done();
+    }
+
 }
