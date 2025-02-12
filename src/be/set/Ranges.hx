@@ -19,7 +19,7 @@ class Ranges {
 
 	private inline function get_min() return values[0].min | 0;
 	private inline function get_max() return values[values.length - 1].max | 0;
-	private inline function get_length() return max - min;
+	private inline function get_length() return values.length > 0 ? max - min : 0;
 	
 	public function has(value:Int):Bool {
 		for (range in values) if (range.has(value)) return true;
