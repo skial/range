@@ -382,4 +382,13 @@ class RangesSpec {
         return asserts.done();
     }
 
+    public function testEmpty_pr_date120225() {
+        var rs = Ranges.EMPTY;
+        asserts.assert( rs.length == 0 );
+
+        rs = new Ranges([]);
+        asserts.assert( rs.length == 0 );
+        return asserts.done();
+    }
+
 }
